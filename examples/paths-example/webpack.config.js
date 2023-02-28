@@ -8,10 +8,12 @@ module.exports = {
     },
 
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.(nunj|nunjucks)$/,
-                loader: 'nunjucks-loader'
+                use: {
+                    loader: path.resolve('../../index.js')
+                }
             }
         ]
     },

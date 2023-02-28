@@ -25,21 +25,21 @@ module.exports = function (source) {
     this.cacheable();
 
     if (!hasRun){
-        var query = loaderUtils.parseQuery(this.query);
-        var envOpts = query.opts || {};
-        if (query){
+        var options = loaderUtils.getOptions(this);
+        var envOpts = options.opts || {};
+        if (options){
 
             env = new nunjucks.Environment([], envOpts);
 
-            if (query.config){
-                pathToConfigure = query.config;
+            if (options.config){
+                pathToConfigure = options.config;
                 try {
-                    var configure = require(query.config);
+                    var configure = require(options.config);
                     configure(env);
                 }
                 catch (e) {
                     if (e.code === 'MODULE_NOT_FOUND') {
-                        if (!query.quiet) {
+                        if (!options.quiet) {
                             var message = 'Cannot configure nunjucks environment before precompile\n' +
                                     '\t' + e.message + '\n' +
                                     'Async filters and custom extensions are unsupported when the nunjucks\n' +
@@ -58,12 +58,12 @@ module.exports = function (source) {
 
             // Specify the template search path, so we know from what directory
             // it should be relative to.
-            if (query.root) {
-                root = query.root;
+            if (options.root) {
+                root = options.root;
             }
 
             // Enable experimental Jinja compatibility to be enabled
-            if(query.jinjaCompat){
+            if(options.jinjaCompat){
                 jinjaCompatStr = 'nunjucks.installJinjaCompat();\n';
             }
         }
@@ -73,7 +73,7 @@ module.exports = function (source) {
         hasRun = true;
     }
 
-    var name = slash(path.relative(root || this.rootContext || this.options.context, this.resourcePath));
+    var name = slash(path.relative(root || this.rootContext || this.context, this.resourcePath));
 
     var nunjucksCompiledStr = nunjucks.precompileString(source, {
             env: env,

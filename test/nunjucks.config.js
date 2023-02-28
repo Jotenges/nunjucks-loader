@@ -1,4 +1,4 @@
-var foo = require('foo');
+var foo = require('./fixtures/custom_modules/foo');
 
 module.exports = function(env) {
 
